@@ -1,6 +1,6 @@
 import React from "react";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 
 interface IPost {
   id: number;
@@ -20,6 +20,7 @@ const GET_ALL_POSTS = gql`
 
 const Home = () => {
   const { data, loading } = useQuery(GET_ALL_POSTS);
+  const [fetchPosts, { data: posts }] = useLazyQuery(GET_ALL_POSTS);
 
   if (loading) return <p className="p-5">Carregando...</p>;
 
@@ -39,6 +40,16 @@ const Home = () => {
           </div>
         ))}
       </div>
+      <div className="row p-5">
+        <button
+          onClick={() => fetchPosts()}
+          className="btn-btn-raised btn-primary"
+        >
+          Buscar posts
+        </button>
+      </div>
+      <hr />
+      {JSON.stringify(posts)}
     </div>
   );
 };
