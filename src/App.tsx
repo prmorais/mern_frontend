@@ -3,6 +3,8 @@ import { Route, Switch } from 'react-router-dom';
 
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
+import { ToastContainer } from 'react-toastify';
+
 import Nav from './components/Nav';
 import Home from "./pages/Home";
 import Register from "./pages/auth/Register";
@@ -17,6 +19,7 @@ const App = () => {
 	return (
 		<ApolloProvider client={client}>
 			<Nav />
+			<ToastContainer />
 			<Switch>
 				<Route exact path="/" component={Home} />
 				<Route exact path="/register" component={Register} />

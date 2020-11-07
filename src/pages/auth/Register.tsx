@@ -1,6 +1,8 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 
-import { auth } from '../../firebase'
+import { toast } from 'react-toastify';
+
+import { auth } from '../../firebase';
 
 const Register: React.FC = () => {
 	const [email, setEmail] = useState<string>('');
@@ -19,6 +21,12 @@ const Register: React.FC = () => {
 		console.log('Result', result);
 
 		// Exibe notificação para o usuário sobre o email enviado
+		toast.success(
+			`Email enviado para ${email}. Clique no link para completar seu registro.`,
+			{
+				autoClose: 5000
+			}
+		);
 
 		// Salva o email no local storage
 		localStorage.setItem('emailFormRegistration', email);
@@ -31,7 +39,12 @@ const Register: React.FC = () => {
 
 	return (
 		<div className="container p-5">
-			<h4>Registrar</h4>
+
+			{loading ?
+				<h4 className="text-danger" >Acessando...</h4> :
+				<h4>Registrar</h4>
+			}
+
 			<form onSubmit={handleSubmit} >
 				<div className="form-group">
 					<label>Email</label>
