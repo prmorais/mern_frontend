@@ -1,9 +1,12 @@
 import React from "react";
+import { Route, Switch } from 'react-router-dom';
 
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import Home from "./pages/Home";
 
 import Nav from './components/Nav';
+import Home from "./pages/Home";
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
 
 const client = new ApolloClient({
 	uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
@@ -14,7 +17,11 @@ const App = () => {
 	return (
 		<ApolloProvider client={client}>
 			<Nav />
-			<Home />
+			<Switch>
+				<Route exact path="/" component={Home} />
+				<Route exact path="/register" component={Register} />
+				<Route exact path="/login" component={Login} />
+			</Switch>
 		</ApolloProvider>
 	);
 };

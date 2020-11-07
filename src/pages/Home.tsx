@@ -24,7 +24,7 @@ const GET_ALL_POSTS = gql`
   }
 `;
 
-const Home = () => {
+const Home: React.FC = () => {
 	const { data, loading } = useQuery(GET_ALL_POSTS);
 	const [fetchPosts, { data: posts }] = useLazyQuery(GET_ALL_POSTS);
 
