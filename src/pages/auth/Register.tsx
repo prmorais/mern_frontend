@@ -1,10 +1,31 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+
+import { auth } from '../../firebase'
 
 const Register: React.FC = () => {
 	const [email, setEmail] = useState<string>('');
-	const [loading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
-	const handleSubmit = () => {
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setLoading(true);
+
+		const config = {
+			url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT || '',
+			handleCodeInApp: true
+		}
+
+		const result = await auth.sendSignInLinkToEmail(email, config);
+		console.log('Result', result);
+
+		// Exibe notificação para o usuário sobre o email enviado
+
+		// Salva o email no local storage
+		localStorage.setItem('emailFormRegistration', email);
+
+		// Limpa o state
+		setEmail('');
+		setLoading(false);
 
 	}
 
