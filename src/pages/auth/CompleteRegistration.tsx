@@ -1,24 +1,27 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { auth } from "../../firebase";
 
-const Register: React.FC = () => {
+const CompleteRegistration: React.FC = () => {
   const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  let history = useHistory();
+
+  useEffect(() => {
+    const value = localStorage.getItem("emailForRegistration");
+
+    setEmail(value ? value : "");
+  }, [history]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
-    const config = {
-      url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT || "",
-      handleCodeInApp: true,
-    };
-
-    const result = await auth.sendSignInLinkToEmail(email, config);
-    console.log("Result", result);
+    // const result = await auth.sendSignInLinkToEmail(email, config);
+    // console.log("Result", result);
 
     // Exibe notificação para o usuário sobre o email enviado
     toast.success(
@@ -55,6 +58,20 @@ const Register: React.FC = () => {
               setEmail(e.target.value)
             }
             placeholder="Entre com o e-mail"
+            disabled
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
+            placeholder="Entre com a Senha"
             disabled={loading}
           />
         </div>
@@ -69,4 +86,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
+export default CompleteRegistration;
