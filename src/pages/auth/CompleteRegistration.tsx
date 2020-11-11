@@ -20,23 +20,32 @@ const CompleteRegistration: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    // const result = await auth.sendSignInLinkToEmail(email, config);
-    // console.log("Result", result);
-
-    // Exibe notificação para o usuário sobre o email enviado
-    toast.success(
-      `Email enviado para ${email}. Clique no link para completar seu registro.`,
-      {
+    // Validação
+    if (!email || !password) {
+      toast.error("Entre com email e senha", {
         autoClose: 5000,
+      });
+      return;
+    }
+
+    try {
+      const result = await auth.signInWithEmailLink(
+        email,
+        window.location.href
+      );
+      // console.log(result);
+      if (result.user?.emailVerified) {
+        window.localStorage.removeItem("emailForRegistration");
+
+        let user = auth.currentUser;
+
+        await user?.updatePassword(password);
       }
-    );
-
-    // Salva o email no local storage
-    localStorage.setItem("emailForRegistration", email);
-
-    // Limpa o state
-    setEmail("");
-    setLoading(false);
+    } catch (err) {
+      console.log("Erro na validação do registro", err.messagem);
+      setLoading(false);
+      toast.error(err.message);
+    }
   };
 
   return (
