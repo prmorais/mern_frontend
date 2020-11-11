@@ -1,9 +1,17 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../context/authContext";
 import { auth } from "../../firebase";
 
 const CompleteRegistration: React.FC = () => {
+  const { dispatch } = useContext(AuthContext);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,11 +43,27 @@ const CompleteRegistration: React.FC = () => {
       );
       // console.log(result);
       if (result.user?.emailVerified) {
+        // Remove o email do localstorage
         window.localStorage.removeItem("emailForRegistration");
 
         let user = auth.currentUser;
 
         await user?.updatePassword(password);
+
+        // "Despacha" usuario com token e email, para em seguinda, redirecionar
+        const idTokenResult = await user?.getIdTokenResult();
+
+        dispatch({
+          type: "LOGGED_IN_USE",
+          payload: {
+            email: user?.email,
+            token: idTokenResult?.token,
+          },
+        });
+
+        // Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
+
+        history.push("/");
       }
     } catch (err) {
       console.log("Erro na validação do registro", err.messagem);
@@ -53,7 +77,7 @@ const CompleteRegistration: React.FC = () => {
       {loading ? (
         <h4 className="text-danger">Acessando...</h4>
       ) : (
-        <h4>Registrar</h4>
+        <h4>Complete seu registro</h4>
       )}
 
       <form onSubmit={handleSubmit}>
