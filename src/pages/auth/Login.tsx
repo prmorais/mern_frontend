@@ -2,14 +2,14 @@ import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/authContext";
-import { auth } from "../../firebase";
+import { auth, googleAuthProvider } from "../../firebase";
 
 const Login: React.FC = () => {
   const { dispatch } = useContext(AuthContext);
   const [email, setEmail] = useState<string>("prmorais1302@gmail.com");
   const [password, setPassword] = useState<string>("P@ulo1313");
   const [loading, setLoading] = useState<boolean>(false);
-  const [success] = useState<boolean>(false);
+  // const [success] = useState<boolean>(false);
 
   let history = useHistory();
 
@@ -20,8 +20,8 @@ const Login: React.FC = () => {
     try {
       await auth
         .signInWithEmailAndPassword(email, password)
-        .then(async (resuult) => {
-          const { user } = resuult;
+        .then(async (result) => {
+          const { user } = result;
           const idTokenResult = await user?.getIdTokenResult();
 
           dispatch({
@@ -35,13 +35,33 @@ const Login: React.FC = () => {
     } catch (err) {
       console.log("Ocorreu um erro ao fazer login", err.message);
       toast.error(err.message, { autoClose: 5000 });
-      return;
+      setLoading(false);
     }
+  };
+
+  const googleLogin = () => {
+    auth.signInWithPopup(googleAuthProvider).then(async (result) => {
+      const { user } = result;
+      const idTokenResult = await user?.getIdTokenResult();
+
+      dispatch({
+        type: "LOGGED_IN_USER",
+        payload: { email: user?.email, token: idTokenResult?.token },
+      });
+
+      // Envia informações para nosso servidor mongodb para criar/atualizar o usuário
+      history.push("/");
+    });
   };
 
   return (
     <div className="container p-5">
-      <h4>Login</h4>
+      {loading ? <h4 className="text-danger">Acessando...</h4> : <h4>Login</h4>}
+
+      <button onClick={googleLogin} className="btn btn-raised btn-danger mt-5">
+        Login com Google
+      </button>
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Email</label>
