@@ -1,4 +1,5 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useEffect, useReducer } from 'react';
+import { auth } from '../firebase';
 
 
 // Reducer
@@ -23,6 +24,30 @@ const AuthContext = createContext();
 // Context provider
 const AuthProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(firebaseReducer, initialState);
+
+	useEffect(() => {
+		const unsubcribe = auth.onAuthStateChanged(async user => {
+			if (user) {
+				const idTokenResult = await user.getIdTokenResult();
+
+				dispatch({
+					type: "LOGGED_IN_USER",
+					payload: {
+						email: user.email,
+						token: idTokenResult.token,
+					},
+				});
+			} else {
+				dispatch({
+					type: "LOGGED_IN_USER",
+					payload: null,
+				});
+			}
+		});
+		// Limpa a subscription
+		return () => unsubcribe();
+
+	}, []);
 
 	const value = { state, dispatch };
 
