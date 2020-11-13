@@ -1,122 +1,136 @@
 import React, {
-	ChangeEvent,
-	FormEvent,
-	useContext,
-	useEffect,
-	useState,
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
+import { gql, useMutation } from "@apollo/client";
 import { useHistory } from "react-router-dom";
+
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/authContext";
 import { auth } from "../../firebase";
 
+const USER_CREATE = gql`
+  mutation userCreate {
+    userCreate {
+      username
+      email
+    }
+  }
+`;
+
 const CompleteRegistration: React.FC = () => {
-	const { dispatch } = useContext(AuthContext);
-	const [email, setEmail] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
-	const [loading, setLoading] = useState<boolean>(false);
+  const { dispatch } = useContext(AuthContext);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-	let history = useHistory();
+  let history = useHistory();
 
-	useEffect(() => {
-		const value = localStorage.getItem("emailForRegistration");
+  useEffect(() => {
+    const value = localStorage.getItem("emailForRegistration");
 
-		setEmail(value ? value : "");
-	}, [history]);
+    setEmail(value ? value : "");
+  }, [history]);
 
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		setLoading(true);
+  const [userCreate] = useMutation(USER_CREATE);
 
-		// Validação
-		if (!email || !password) {
-			toast.error("Entre com email e senha", {
-				autoClose: 5000,
-			});
-			return;
-		}
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
 
-		try {
-			const result = await auth.signInWithEmailLink(
-				email,
-				window.location.href
-			);
-			// console.log(result);
-			if (result.user?.emailVerified) {
-				// Remove o email do localstorage
-				window.localStorage.removeItem("emailForRegistration");
+    // Validação
+    if (!email || !password) {
+      toast.error("Entre com email e senha", {
+        autoClose: 5000,
+      });
+      return;
+    }
 
-				let user = auth.currentUser;
+    try {
+      const result = await auth.signInWithEmailLink(
+        email,
+        window.location.href
+      );
+      // console.log(result);
+      if (result.user?.emailVerified) {
+        // Remove o email do localstorage
+        window.localStorage.removeItem("emailForRegistration");
 
-				await user?.updatePassword(password);
+        let user = auth.currentUser;
 
-				// "Despacha" usuario com token e email, para em seguinda, redirecionar
-				const idTokenResult = await user?.getIdTokenResult();
+        await user?.updatePassword(password);
 
-				dispatch({
-					type: "LOGGED_IN_USER",
-					payload: {
-						email: user?.email,
-						token: idTokenResult?.token,
-					},
-				});
+        // "Despacha" usuario com token e email, para em seguinda, redirecionar
+        const idTokenResult = await user?.getIdTokenResult();
 
-				// Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
+        dispatch({
+          type: "LOGGED_IN_USER",
+          payload: {
+            email: user?.email,
+            token: idTokenResult?.token,
+          },
+        });
 
-				history.push("/");
-			}
-		} catch (err) {
-			console.log("Erro na validação do registro", err.messagem);
-			setLoading(false);
-			toast.error(err.message);
-		}
-	};
+        // Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
+        userCreate();
 
-	return (
-		<div className="container p-5">
-			{loading ? (
-				<h4 className="text-danger">Acessando...</h4>
-			) : (
-					<h4>Complete seu registro</h4>
-				)}
+        history.push("/");
+      }
+    } catch (err) {
+      console.log("Erro na validação do registro", err.messagem);
+      setLoading(false);
+      toast.error(err.message);
+    }
+  };
 
-			<form onSubmit={handleSubmit}>
-				<div className="form-group">
-					<label>Email</label>
-					<input
-						type="email"
-						className="form-control"
-						value={email}
-						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							setEmail(e.target.value)
-						}
-						placeholder="Entre com o e-mail"
-						disabled
-					/>
-				</div>
+  return (
+    <div className="container p-5">
+      {loading ? (
+        <h4 className="text-danger">Acessando...</h4>
+      ) : (
+        <h4>Complete seu registro</h4>
+      )}
 
-				<div className="form-group">
-					<label>Password</label>
-					<input
-						type="password"
-						className="form-control"
-						value={password}
-						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							setPassword(e.target.value)
-						}
-						placeholder="Entre com a Senha"
-						disabled={loading}
-					/>
-				</div>
-				<button
-					className="btn btn-raised btn-primary"
-					disabled={!email || loading}
-				>
-					Submit
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            className="form-control"
+            value={email}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
+            placeholder="Entre com o e-mail"
+            disabled
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
+            placeholder="Entre com a Senha"
+            disabled={loading}
+          />
+        </div>
+        <button
+          className="btn btn-raised btn-primary"
+          disabled={!email || loading}
+        >
+          Submit
         </button>
-			</form>
-		</div>
-	);
+      </form>
+    </div>
+  );
 };
 
 export default CompleteRegistration;
