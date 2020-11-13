@@ -1,17 +1,28 @@
+import { gql, useMutation } from "@apollo/client";
 import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/authContext";
 import { auth, googleAuthProvider } from "../../firebase";
 
+const USER_CREATE = gql`
+  mutation userCreate {
+    userCreate {
+      username
+      email
+    }
+  }
+`;
+
 const Login: React.FC = () => {
   const { dispatch } = useContext(AuthContext);
   const [email, setEmail] = useState<string>("prmorais1302@gmail.com");
   const [password, setPassword] = useState<string>("P@ulo1313");
   const [loading, setLoading] = useState<boolean>(false);
-  // const [success] = useState<boolean>(false);
 
   let history = useHistory();
+
+  const [userCreate] = useMutation(USER_CREATE);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,6 +41,8 @@ const Login: React.FC = () => {
           });
 
           // Envia informações para nosso servidor mongodb para criar/atualizar o usuário
+          userCreate();
+
           history.push("/");
         });
     } catch (err) {
