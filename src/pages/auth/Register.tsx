@@ -1,6 +1,7 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 
 import { toast } from "react-toastify";
+import AuthForm from "../../components/forms/AuthForm";
 
 import { auth } from "../../firebase";
 
@@ -44,27 +45,13 @@ const Register: React.FC = () => {
         <h4>Registrar</h4>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            placeholder="Entre com o e-mail"
-            disabled={loading}
-          />
-        </div>
-        <button
-          className="btn btn-raised btn-primary"
-          disabled={!email || loading}
-        >
-          Submit
-        </button>
-      </form>
+      <AuthForm
+        email={email}
+        loading={loading}
+        setEmail={setEmail}
+        handleSubmit={handleSubmit}
+        showPasswordInput={false}
+      />
     </div>
   );
 };
