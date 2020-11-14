@@ -78,7 +78,7 @@ const CompleteRegistration: React.FC = () => {
 				// Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
 				userCreate();
 
-				history.push("/");
+				history.push("/profile");
 			}
 		} catch (err) {
 			console.log("Erro na validação do registro", err.messagem);

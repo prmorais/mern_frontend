@@ -13,7 +13,9 @@ import PrivateRouter from "./components/PrivateRoute";
 
 import CompleteRegistration from "./pages/auth/CompleteRegistration";
 import Login from "./pages/auth/Login";
-import PasswordForgot from "./pages/auth/PasswordForgot";
+import PasswordUpdate from "./pages/auth/PasswordUpdate";
+import Post from "./pages/auth/Post";
+import Profile from "./pages/auth/Profile";
 import Register from "./pages/auth/Register";
 
 const App = () => {
@@ -41,10 +43,19 @@ const App = () => {
 					path="/complete-registration"
 					component={CompleteRegistration}
 				/>
+
 				<PrivateRouter
 					exact
-					path="/password/forgot"
-					component={PasswordForgot} />
+					path="/profile"
+					component={Profile} />
+				<PrivateRouter
+					exact
+					path="/password/update"
+					component={PasswordUpdate} />
+				<PrivateRouter
+					exact
+					path="/post/create"
+					component={Post} />
 			</Switch>
 		</ApolloProvider>
 	);

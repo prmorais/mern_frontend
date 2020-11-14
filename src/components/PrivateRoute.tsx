@@ -16,19 +16,19 @@ const PrivateRouter = ({ children, ...rest }: any) => {
 		<nav>
 			<ul className="nav flex-column">
 				<li className="nav-item">
-					<Link to="/update/profile" className="nav-link">
+					<Link to="/profile" className="nav-link">
 						Profile
 					</Link>
 				</li>
 
 				<li className="nav-item">
-					<Link to="/update/password" className="nav-link">
+					<Link to="/password/update" className="nav-link">
 						Password
 					</Link>
 				</li>
 
 				<li className="nav-item">
-					<Link to="/create/post" className="nav-link">
+					<Link to="/post/create" className="nav-link">
 						Post
 					</Link>
 				</li>

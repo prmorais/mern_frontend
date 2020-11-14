@@ -44,7 +44,7 @@ const Login: React.FC = () => {
 					// Envia informações para nosso servidor mongodb para criar/atualizar o usuário
 					userCreate();
 
-					history.push("/");
+					history.push("/profile");
 				});
 		} catch (err) {
 			console.log("Ocorreu um erro ao fazer login", err.message);
@@ -64,7 +64,9 @@ const Login: React.FC = () => {
 			});
 
 			// Envia informações para nosso servidor mongodb para criar/atualizar o usuário
-			history.push("/");
+			userCreate();
+
+			history.push("/profile");
 		});
 	};
 
