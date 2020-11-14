@@ -5,41 +5,49 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 import { ToastContainer } from "react-toastify";
 
-import Nav from "./components/Nav";
-import Home from "./pages/Home";
-import Register from "./pages/auth/Register";
-import CompleteRegistration from "./pages/auth/CompleteRegistration";
-import Login from "./pages/auth/Login";
 import { AuthContext } from "./context/authContext";
 
+import Nav from "./components/Nav";
+import Home from "./pages/Home";
+import PrivateRouter from "./components/PrivateRoute";
+
+import CompleteRegistration from "./pages/auth/CompleteRegistration";
+import Login from "./pages/auth/Login";
+import PasswordForgot from "./pages/auth/PasswordForgot";
+import Register from "./pages/auth/Register";
+
 const App = () => {
-  const { state } = useContext(AuthContext);
-  const { user } = state;
+	const { state } = useContext(AuthContext);
+	const { user } = state;
 
-  const client = new ApolloClient({
-    uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
-    headers: {
-      authorization: user ? user.token : "",
-    },
-    cache: new InMemoryCache(),
-  });
+	const client = new ApolloClient({
+		uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
+		headers: {
+			authorization: user ? user.token : "",
+		},
+		cache: new InMemoryCache(),
+	});
 
-  return (
-    <ApolloProvider client={client}>
-      <Nav />
-      <ToastContainer />
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/register" component={Register} />
-        <Route exact path="/login" component={Login} />
-        <Route
-          exact
-          path="/complete-registration"
-          component={CompleteRegistration}
-        />
-      </Switch>
-    </ApolloProvider>
-  );
+	return (
+		<ApolloProvider client={client}>
+			<Nav />
+			<ToastContainer />
+			<Switch>
+				<Route exact path="/" component={Home} />
+				<Route exact path="/register" component={Register} />
+				<Route exact path="/login" component={Login} />
+				<Route
+					exact
+					path="/complete-registration"
+					component={CompleteRegistration}
+				/>
+				<PrivateRouter
+					exact
+					path="/password/forgot"
+					component={PasswordForgot} />
+			</Switch>
+		</ApolloProvider>
+	);
 };
 
 export default App;

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, Route } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
 
-const PrivateRouter: React.FC = ({ children, ...rest }) => {
+const PrivateRouter = ({ children, ...rest }: any) => {
 	const { state } = useContext(AuthContext);
 	const [user, setUser] = useState(false);
 
