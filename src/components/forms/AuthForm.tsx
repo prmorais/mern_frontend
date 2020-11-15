@@ -42,11 +42,11 @@ const AuthForm = ({
 						type="password"
 						className="form-control"
 						value={password}
-						onChange={(e: ChangeEvent<HTMLInputElement>) => {
-							setPassword &&
-								setPassword(e.target.value)
-						}
-
+						onChange={
+							(e: ChangeEvent<HTMLInputElement>) => {
+								setPassword &&
+									setPassword(e.target.value)
+							}
 						}
 						placeholder="Entre com a Senha"
 						disabled={loading}

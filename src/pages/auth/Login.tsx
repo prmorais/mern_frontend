@@ -1,10 +1,13 @@
-import { gql, useMutation } from "@apollo/client";
 import React, { FormEvent, useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
+import { gql, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
+
+import { auth, googleAuthProvider } from "../../firebase";
+
 import AuthForm from "../../components/forms/AuthForm";
 import { AuthContext } from "../../context/authContext";
-import { auth, googleAuthProvider } from "../../firebase";
 
 const USER_CREATE = gql`
   mutation userCreate {
@@ -87,6 +90,12 @@ const Login: React.FC = () => {
 				handleSubmit={handleSubmit}
 				showPasswordInput
 			/>
+
+			<Link
+				className="text-danger float-right"
+				to="/password/forgot">
+				Esqueci a senha
+			</Link>
 		</div>
 	);
 };
