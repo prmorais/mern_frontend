@@ -58,7 +58,9 @@ const AuthForm = ({
       <button
         className="btn btn-raised btn-primary"
         disabled={
-          showPasswordInput ? !email || !password || loading : !email || loading
+          showPasswordInput || hideEmailInput
+            ? !email || !password || loading
+            : !password || loading
         }
       >
         Submit
