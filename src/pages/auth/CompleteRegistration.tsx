@@ -18,90 +18,90 @@ const USER_CREATE = gql`
 `;
 
 const CompleteRegistration: React.FC = () => {
-  const { dispatch } = useContext(AuthContext);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+	const { dispatch } = useContext(AuthContext);
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
 
-  let history = useHistory();
+	let history = useHistory();
 
-  useEffect(() => {
-    const value = localStorage.getItem("emailForRegistration");
+	useEffect(() => {
+		const value = localStorage.getItem("emailForRegistration");
 
-    setEmail(value ? value : "");
-  }, [history]);
+		setEmail(value ? value : "");
+	}, [history]);
 
-  const [userCreate] = useMutation(USER_CREATE);
+	const [userCreate] = useMutation(USER_CREATE);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setLoading(true);
 
-    // Validação
-    if (!email || !password) {
-      toast.error("Entre com email e senha", {
-        autoClose: 5000,
-      });
-      return;
-    }
+		// Validação
+		if (!email || !password) {
+			toast.error("Entre com email e senha", {
+				autoClose: 5000,
+			});
+			return;
+		}
 
-    try {
-      const result = await auth.signInWithEmailLink(
-        email,
-        window.location.href
-      );
-      // console.log(result);
-      if (result.user?.emailVerified) {
-        // Remove o email do localstorage
-        window.localStorage.removeItem("emailForRegistration");
+		try {
+			const result = await auth.signInWithEmailLink(
+				email,
+				window.location.href
+			);
+			// console.log(result);
+			if (result.user?.emailVerified) {
+				// Remove o email do localstorage
+				window.localStorage.removeItem("emailForRegistration");
 
-        let user = auth.currentUser;
+				let user = auth.currentUser;
 
-        await user?.updatePassword(password);
+				await user?.updatePassword(password);
 
-        // "Despacha" usuario com token e email, para em seguinda, redirecionar
-        const idTokenResult = await user?.getIdTokenResult();
+				// "Despacha" usuario com token e email, para em seguinda, redirecionar
+				const idTokenResult = await user?.getIdTokenResult();
 
-        dispatch({
-          type: "LOGGED_IN_USER",
-          payload: {
-            email: user?.email,
-            token: idTokenResult?.token,
-          },
-        });
+				dispatch({
+					type: "LOGGED_IN_USER",
+					payload: {
+						email: user?.email,
+						token: idTokenResult?.token,
+					},
+				});
 
-        // Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
-        userCreate();
+				// Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
+				userCreate();
 
-        history.push("/profile");
-      }
-    } catch (err) {
-      console.log("Erro na validação do registro", err.messagem);
-      setLoading(false);
-      toast.error(err.message);
-    }
-  };
+				history.push("/profile");
+			}
+		} catch (err) {
+			console.log("Erro na validação do registro", err.messagem);
+			setLoading(false);
+			toast.error(err.message);
+		}
+	};
 
-  return (
-    <div className="container p-5">
-      {loading ? (
-        <h4 className="text-danger">Acessando...</h4>
-      ) : (
-        <h4>Complete seu registro</h4>
-      )}
+	return (
+		<div className="container p-5">
+			{loading ? (
+				<h4 className="text-danger">Acessando...</h4>
+			) : (
+					<h4>Complete seu registro</h4>
+				)}
 
-      <AuthForm
-        email={email}
-        password={password}
-        loading={loading}
-        setEmail={setEmail}
-        setPassword={setPassword}
-        handleSubmit={handleSubmit}
-        showPasswordInput={true}
-        hideEmailInput={false}
-      />
-    </div>
-  );
+			<AuthForm
+				email={email}
+				password={password}
+				loading={loading}
+				setEmail={setEmail}
+				setPassword={setPassword}
+				handleSubmit={handleSubmit}
+				showPasswordInput={true}
+				showEmailInput={true}
+			/>
+		</div>
+	);
 };
 
 export default CompleteRegistration;

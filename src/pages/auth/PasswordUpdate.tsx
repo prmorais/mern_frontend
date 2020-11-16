@@ -6,50 +6,62 @@ import AuthForm from "../../components/forms/AuthForm";
 import { toast } from "react-toastify";
 
 const PasswordUpdate = () => {
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+	const [password, setPassword] = useState("");
+	const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setLoading(true);
 
-    await auth.currentUser
-      ?.updatePassword(password)
-      .then(() => {
-        setLoading(false);
+		const user = auth.currentUser?.email?.split("@")[0];
 
-        toast.success(
-          `Senha do usuário ${auth.currentUser?.email} atualizada com sucesso`
-        );
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log("Ocorreu um erro ao atualizar senha", err);
+		await auth.currentUser
+			?.updatePassword(password)
+			.then(() => {
+				setLoading(false);
 
-        toast.error(
-          `Erro ao atualizar senha do usuário ${auth.currentUser?.email}! Contate o administrador.`
-        );
-      });
-  };
+				toast.success(
+					`Senha do usuário <${user}> foi atualizada.`
+				);
+			})
+			.catch((err) => {
+				setLoading(false);
+				// console.log("Ocorreu um erro ao atualizar senha", err);
+				if (err.code === 'auth/weak-password') {
+					toast.error(
+						`A Senha deve conter no mínimo 6 caracteres!`
+					);
 
-  return (
-    <div className="container p-5">
-      {loading ? (
-        <h4 className="text-danger">Acessando...</h4>
-      ) : (
-        <h4>Atualizando senha</h4>
-      )}
+				} else if (err.code === 'auth/requires-recent-login') {
+					toast.error(
+						`Faça login e tente novamente!`
+					);
+				} else {
+					toast.error(
+						`Erro ao atualizar senha! Contate o administrador.`
+					);
+				}
+			});
+	};
 
-      <AuthForm
-        password={password}
-        setPassword={setPassword}
-        loading={loading}
-        handleSubmit={handleSubmit}
-        showPasswordInput
-        hideEmailInput={true}
-      />
-    </div>
-  );
+	return (
+		<div className="container p-5">
+			{loading ? (
+				<h4 className="text-danger">Acessando...</h4>
+			) : (
+					<h4>Atualizando senha</h4>
+				)}
+
+			<AuthForm
+				password={password}
+				setPassword={setPassword}
+				loading={loading}
+				handleSubmit={handleSubmit}
+				showPasswordInput={true}
+				showEmailInput={false}
+			/>
+		</div>
+	);
 };
 
 export default PasswordUpdate;
