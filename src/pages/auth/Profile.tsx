@@ -1,5 +1,17 @@
 import { gql, useQuery } from '@apollo/client';
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+
+interface IProfile {
+	username: string,
+	name: string,
+	email: string,
+	about: string,
+	images: string[],
+}
+
+interface IProfileResp {
+	profile: IProfile,
+}
 
 const PROFILE = gql`
 	query {
@@ -20,7 +32,7 @@ const PROFILE = gql`
 `;
 
 const Profile = () => {
-	const [values, setValues] = useState({
+	const [values, setValues] = useState<IProfile>({
 		username: '',
 		name: '',
 		email: '',
@@ -30,11 +42,22 @@ const Profile = () => {
 
 	const [loading, setLoading] = useState(false);
 
-	const { data } = useQuery(PROFILE);
+	const { data } = useQuery<IProfileResp>(PROFILE);
+
+	useMemo(() => {
+		data &&
+			setValues({
+				username: data.profile.username,
+				name: data.profile.name,
+				email: data.profile.email,
+				about: data.profile.about,
+				images: data.profile.images,
+			})
+	}, [data])
 
 	return (
 		<div className="container p-5">
-			{ JSON.stringify(data)}
+			{ JSON.stringify(values)}
 		</div>
 	)
 }
