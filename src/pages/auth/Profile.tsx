@@ -1,13 +1,20 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import React, { ChangeEvent, FormEvent, useMemo, useState } from 'react'
+
 import { toast } from 'react-toastify';
+import omitDeep from 'omit-deep-lodash';
+
+interface IImage {
+	url: string,
+	public_id: string,
+}
 
 interface IProfile {
 	username: string,
 	name: string,
 	email: string,
 	about: string,
-	images: string[],
+	images: [IImage],
 }
 
 interface IProfileResp {
@@ -56,24 +63,34 @@ const Profile = () => {
 		name: '',
 		email: '',
 		about: '',
-		images: [],
+		images: [{ url: '', public_id: '' }],
 	});
 
 	const [loading, setLoading] = useState(false);
 
 	const { data } = useQuery<IProfileResp>(PROFILE);
 
+
 	useMemo(() => {
+		// Inicio da gambiarra
+		let images: any;
+
+		if (data) {
+			// Retira o campo __typename da resposta
+			images = omitDeep(data.profile.images, '__typename');
+		}
+		// fim da gambiarra
+
 		data &&
 			setValues({
-				...values,
+				//...values,
 				username: data.profile.username,
 				name: data.profile.name,
 				email: data.profile.email,
 				about: data.profile.about,
-				images: data.profile.images,
+				images,
 			})
-	}, [data, values]);
+	}, [data]);
 
 	// Mutation
 	const [userUpdate] = useMutation(USER_PROFILE, {
@@ -85,11 +102,11 @@ const Profile = () => {
 	});
 
 	// Destructure
-	const { about, email, images, name, username } = values;
+	const { about, email, name, username } = values;
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		// console.log(values);
+		console.log(values);
 
 		setLoading(true);
 		userUpdate({ variables: { input: values } });
@@ -147,8 +164,6 @@ const Profile = () => {
 			<div className="form-group">
 				<label>Imagem</label>
 				<input
-					name="image"
-					// value={images}
 					onChange={handleImageChange}
 					placeholder="Imagens"
 					type="file"
