@@ -1,8 +1,11 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 import omitDeep from "omit-deep-lodash";
+
+import { PROFILE } from "../../graphql/queries";
+import { USER_UPDATE } from "../../graphql/mutations";
 
 interface IImage {
   url: string;
@@ -20,40 +23,6 @@ interface IProfile {
 interface IProfileResp {
   profile: IProfile;
 }
-
-const USER_INFO = gql`
-  fragment userInfo on User {
-    _id
-    username
-    name
-    email
-    images {
-      url
-      public_id
-    }
-    about
-    createdAt
-    updatedAt
-  }
-`;
-
-const PROFILE = gql`
-  query {
-    profile {
-      ...userInfo
-    }
-  }
-  ${USER_INFO}
-`;
-
-const USER_PROFILE = gql`
-  mutation userUpdate($input: UserUpdateInput!) {
-    userUpdate(input: $input) {
-      ...userInfo
-    }
-  }
-  ${USER_INFO}
-`;
 
 const Profile = () => {
   const [values, setValues] = useState<IProfile>({
@@ -90,7 +59,7 @@ const Profile = () => {
   }, [data]);
 
   // Mutation
-  const [userUpdate] = useMutation(USER_PROFILE, {
+  const [userUpdate] = useMutation(USER_UPDATE, {
     update: ({ data }: any) => {
       console.log("Atualização de usuário na mutation profile", data);
 
