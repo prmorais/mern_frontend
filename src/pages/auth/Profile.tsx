@@ -1,5 +1,6 @@
-import { gql, useQuery } from '@apollo/client';
-import React, { useMemo, useState } from 'react'
+import { gql, useMutation, useQuery } from '@apollo/client';
+import React, { ChangeEvent, FormEvent, useMemo, useState } from 'react'
+import { toast } from 'react-toastify';
 
 interface IProfile {
 	username: string,
@@ -31,6 +32,24 @@ const PROFILE = gql`
 	}
 `;
 
+const USER_PROFILE = gql`
+	mutation userUpdate($input: UserUpdateInput!) {
+		userUpdate(input: $input) {
+			_id
+			username
+			name
+			email
+			images {
+				url
+				public_id
+			}
+			about
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
 const Profile = () => {
 	const [values, setValues] = useState<IProfile>({
 		username: '',
@@ -47,22 +66,40 @@ const Profile = () => {
 	useMemo(() => {
 		data &&
 			setValues({
+				...values,
 				username: data.profile.username,
 				name: data.profile.name,
 				email: data.profile.email,
 				about: data.profile.about,
 				images: data.profile.images,
 			})
-	}, [data]);
+	}, [data, values]);
 
+	// Mutation
+	const [userUpdate] = useMutation(USER_PROFILE, {
+		update: ({ data }: any) => {
+			console.log('Atualização de usuário na mutation profile', data);
+
+			toast.success('Perfil do usuário foi atualizado.');
+		}
+	});
+
+	// Destructure
 	const { about, email, images, name, username } = values;
 
-	const handleSubmit = () => {
-		setLoading(false)
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		// console.log(values);
+
+		setLoading(true);
+		userUpdate({ variables: { input: values } });
+		setLoading(false);
 	};
 
-	const handleChange = () => {
-
+	const handleChange = (
+		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		setValues({ ...values, [event.target.name]: event.target.value });
 	};
 
 	const handleImageChange = () => {
