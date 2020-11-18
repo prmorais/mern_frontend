@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client";
 import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
 
+import Resizer from "react-image-file-resizer";
+
 import { toast } from "react-toastify";
 import omitDeep from "omit-deep-lodash";
 
@@ -85,7 +87,26 @@ const Profile = () => {
     setValues({ ...values, [event.target.name]: event.target.value });
   };
 
-  const handleImageChange = () => {};
+  const fileResizeAndUpload = (event: ChangeEvent<any>) => {
+    let fileInput = false;
+    if (event.target.files[0]) {
+      fileInput = true;
+    }
+    if (fileInput) {
+      Resizer.imageFileResizer(
+        event.target.files[0],
+        300,
+        300,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          console.log(uri);
+        },
+        "base64"
+      );
+    }
+  };
 
   const profileUpdateForm = () => (
     <form onSubmit={handleSubmit}>
@@ -131,7 +152,7 @@ const Profile = () => {
       <div className="form-group">
         <label>Imagem</label>
         <input
-          onChange={handleImageChange}
+          onChange={fileResizeAndUpload}
           placeholder="Imagens"
           type="file"
           accept="image/*"
