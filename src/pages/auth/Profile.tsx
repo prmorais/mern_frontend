@@ -1,6 +1,13 @@
 import { useMutation, useQuery } from "@apollo/client";
-import React, { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
+import axios from "axios";
 import Resizer from "react-image-file-resizer";
 
 import { toast } from "react-toastify";
@@ -8,6 +15,7 @@ import omitDeep from "omit-deep-lodash";
 
 import { PROFILE } from "../../graphql/queries";
 import { USER_UPDATE } from "../../graphql/mutations";
+import { AuthContext } from "../../context/authContext";
 
 interface IImage {
   url: string;
@@ -19,7 +27,7 @@ interface IProfile {
   name: string;
   email: string;
   about: string;
-  images: [IImage];
+  images: Array<IImage>;
 }
 
 interface IProfileResp {
@@ -27,12 +35,13 @@ interface IProfileResp {
 }
 
 const Profile = () => {
+  const { state } = useContext(AuthContext);
   const [values, setValues] = useState<IProfile>({
     username: "",
     name: "",
     email: "",
     about: "",
-    images: [{ url: "", public_id: "" }],
+    images: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -101,7 +110,26 @@ const Profile = () => {
         100,
         0,
         (uri) => {
-          console.log(uri);
+          // console.log(uri);
+          axios
+            .post<IImage>(
+              `${process.env.REACT_APP_REST_ENDPOINT}/uploadimage`,
+              { image: uri },
+              {
+                headers: {
+                  authorization: state.user.token,
+                },
+              }
+            )
+            .then((response) => {
+              setLoading(false);
+              console.log("Upload para Cloudinary", response);
+              setValues({ ...values, images: [response.data] });
+            })
+            .catch((err) => {
+              setLoading(false);
+              console.log("Upload para cloudinary falhou!");
+            });
         },
         "base64"
       );
