@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@apollo/client";
 import React, {
 	ChangeEvent,
 	FormEvent,
-	// useContext,
 	useMemo,
 	useState,
 } from "react";
@@ -12,7 +11,6 @@ import omitDeep from "omit-deep-lodash";
 
 import { PROFILE } from "../../graphql/queries";
 import { USER_UPDATE } from "../../graphql/mutations";
-// import { AuthContext } from "../../context/authContext";
 import {
 	IProfile,
 	IProfileResp,
@@ -21,7 +19,6 @@ import UserProfile from "../../components/forms/UserProfile";
 import FileUpload from "../../components/FileUpload";
 
 const Profile = () => {
-	// const { state } = useContext(AuthContext);
 	const [values, setValues] = useState<IProfile>({
 		username: "",
 		name: "",
@@ -64,7 +61,7 @@ const Profile = () => {
 	});
 
 	// Destructure
-	const { about, email, images, name, username } = values;
+	const { images } = values;
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -93,28 +90,13 @@ const Profile = () => {
 						)}
 				</div>
 
-				<div className="col-md-3">
+				<FileUpload
+					setValues={setValues}
+					setLoading={setLoading}
+					values={values}
+					loading={loading}
+				/>
 
-					<FileUpload
-						setValues={setValues}
-						setLoading={setLoading}
-						values={values}
-						loading={loading}
-					/>
-
-				</div>
-				<div className="col-md-9">
-					{images.map((image) => (
-						<img
-							src={image.url}
-							key={image.public_id}
-							alt={image.public_id}
-							style={{ height: "100px" }}
-							className="float-right"
-						// onClick={() => handleImageRemove(image.public_id)}
-						/>
-					))}
-				</div>
 			</div>
 
 			<UserProfile
