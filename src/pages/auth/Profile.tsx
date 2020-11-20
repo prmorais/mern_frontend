@@ -94,6 +94,35 @@ const Profile = () => {
 		setValues({ ...values, [event.target.name]: event.target.value });
 	};
 
+	const handleImageRemove = (id: string) => {
+		setLoading(true);
+
+		axios
+			.post(
+				`${process.env.REACT_APP_REST_ENDPOINT}/removeimage`,
+				{ public_id: id },
+				{
+					headers: {
+						authorization: state.user.token,
+					},
+				}
+			)
+			.then(response => {
+				setLoading(false);
+
+				let filteredImages = images.filter(item => {
+					return item.public_id !== id;
+				});
+
+				setValues({ ...values, images: filteredImages });
+			})
+			.catch(err => {
+				setLoading(false);
+
+				toast.error('Erro ao remover imagem!');
+			})
+	}
+
 	const fileResizeAndUpload = (event: ChangeEvent<any>) => {
 		let fileInput = false;
 
@@ -192,7 +221,7 @@ const Profile = () => {
 				disabled={!email || loading}
 				className="btn btn-primary"
 			>
-				Enviar
+				Salvar
       </button>
 		</form>
 	);
@@ -224,6 +253,7 @@ const Profile = () => {
 								alt={image.public_id}
 								style={{ height: '100px' }}
 								className="float-right"
+								onClick={() => handleImageRemove(image.public_id)}
 							/>
 						))
 					}
