@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, Dispatch } from "react";
 
 export interface IImage {
 	url: string;
@@ -27,4 +27,11 @@ export interface IUserProfile {
 	) => void;
 	handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
 	loading: boolean;
+}
+
+export interface IFileUpload {
+	setValues: Dispatch<IProfile>,
+	setLoading: Dispatch<boolean>,
+	loading: boolean,
+	values: IProfile,
 }
