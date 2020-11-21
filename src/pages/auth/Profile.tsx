@@ -60,9 +60,6 @@ const Profile = () => {
 		},
 	});
 
-	// Destructure
-	const { images } = values;
-
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
@@ -94,7 +91,6 @@ const Profile = () => {
 					setValues={setValues}
 					setLoading={setLoading}
 					values={values}
-					loading={loading}
 				/>
 
 			</div>

@@ -32,6 +32,11 @@ export interface IUserProfile {
 export interface IFileUpload {
 	setValues: Dispatch<IProfile>,
 	setLoading: Dispatch<boolean>,
-	loading: boolean,
+	//loading: boolean,
 	values: IProfile,
 }
+
+export interface IImageProps {
+	image: IImage,
+	handleImageRemove: (f: string) => void,
+} 

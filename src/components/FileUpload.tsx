@@ -7,9 +7,10 @@ import { toast } from 'react-toastify';
 
 import { IFileUpload, IImage } from '../interfaces/Profile.interface';
 import { AuthContext } from '../context/authContext';
+import Image from './Image';
 
 export const FileUpload = (
-	{ setValues, setLoading, values, loading }: IFileUpload
+	{ setValues, setLoading, values }: IFileUpload
 ) => {
 	const { state } = useContext(AuthContext);
 	const { images } = values;
@@ -77,6 +78,7 @@ export const FileUpload = (
 						})
 						.catch((err) => {
 							setLoading(false);
+							toast.error(`Erro ao enviar imagem. Resolução incompatível!`)
 							console.log("Upload para cloudinary falhou!");
 						});
 				},
@@ -104,13 +106,10 @@ export const FileUpload = (
 
 			<div className="col-md-9">
 				{images.map((image) => (
-					<img
-						src={image.url}
+					<Image
+						image={image}
 						key={image.public_id}
-						alt={image.public_id}
-						style={{ height: "100px" }}
-						className="float-right"
-						onClick={() => handleImageRemove(image.public_id)}
+						handleImageRemove={handleImageRemove}
 					/>
 				))}
 			</div>
