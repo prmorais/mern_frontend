@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import React, { useContext } from 'react';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from '../context/authContext';
 
 interface IPost {
   id: number;
@@ -28,8 +28,8 @@ const Home: React.FC = () => {
 
   const updateUserName = () => {
     dispatch({
-      type: "LOGGED_IN_USER",
-      payload: "Paulo Roberto",
+      type: 'LOGGED_IN_USER',
+      payload: 'Paulo Roberto',
     });
   };
 
@@ -38,8 +38,8 @@ const Home: React.FC = () => {
   return (
     <div className="container">
       <div className="row p-5">
-        {data &&
-          data.allPosts.map((post: IPost) => (
+        {data
+          && data.allPosts.map((post: IPost) => (
             <div className="col-md-4" key={post.id}>
               <div className="card">
                 <div className="card-body">
@@ -54,6 +54,7 @@ const Home: React.FC = () => {
       </div>
       <div className="row p-5">
         <button
+          type="button"
           onClick={() => fetchPosts()}
           className="btn-btn-raised btn-primary"
         >
@@ -65,7 +66,7 @@ const Home: React.FC = () => {
       <hr />
       {JSON.stringify(state.user)}
       <hr />
-      <button onClick={updateUserName} className="btn btn-primary">
+      <button type="button" onClick={updateUserName} className="btn btn-primary">
         Change user name
       </button>
     </div>

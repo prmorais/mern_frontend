@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
-import { auth } from "../firebase";
-import { AuthContext } from "../context/authContext";
+import { auth } from '../firebase';
+import { AuthContext } from '../context/authContext';
 
 const Nav: React.FC = () => {
   const { state, dispatch } = useContext(AuthContext);
-  let history = useHistory();
+  const history = useHistory();
 
   const { user } = state;
 
@@ -14,11 +14,11 @@ const Nav: React.FC = () => {
     auth.signOut();
 
     dispatch({
-      type: "LOGGED_IN_USER",
+      type: 'LOGGED_IN_USER',
       payload: null,
     });
 
-    history.push("/login");
+    history.push('/login');
   };
 
   return (
@@ -36,7 +36,7 @@ const Nav: React.FC = () => {
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <span className="navbar-toggler-icon"></span>
+        <span className="navbar-toggler-icon" />
       </button>
 
       <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -44,7 +44,7 @@ const Nav: React.FC = () => {
           {user && (
             <li className="nav-item active">
               <Link className="nav-link" to="/profile">
-                {user && user.email.split("@")[0]}
+                {user && user.email.split('@')[0]}
               </Link>
             </li>
           )}
