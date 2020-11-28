@@ -18,8 +18,9 @@ import PasswordUpdate from './pages/auth/PasswordUpdate';
 import Post from './pages/auth/Post';
 import Profile from './pages/auth/Profile';
 import Register from './pages/auth/Register';
+import PublicRoute from './components/PublicRoute';
 
-const App = () => {
+const App: React.FC = () => {
   const { state } = useContext(AuthContext);
   const { user } = state;
 
@@ -36,9 +37,20 @@ const App = () => {
       <Nav />
       <ToastContainer />
       <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/register" component={Register} />
-        <Route exact path="/login" component={Login} />
+        <Route
+          exact
+          path="/"
+          component={Home}
+        />
+        <PublicRoute
+          path="/register"
+          component={Register}
+        />
+        <PublicRoute
+          exact
+          path="/login"
+          component={Login}
+        />
         <Route
           exact
           path="/complete-registration"

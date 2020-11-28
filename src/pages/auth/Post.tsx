@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-const Post = () => (
+const Post: FC = () => (
   <h4>
     Post
   </h4>

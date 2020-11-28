@@ -1,11 +1,11 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FC, FormEvent, useState } from 'react';
 
 import { toast } from 'react-toastify';
 import { auth } from '../../firebase';
 
 import AuthForm from '../../components/forms/AuthForm';
 
-const PasswordUpdate = () => {
+const PasswordUpdate: FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 

@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import React, {
   ChangeEvent,
+  FC,
   FormEvent,
   useMemo,
   useState,
@@ -18,7 +19,7 @@ import {
 import UserProfile from '../../components/forms/UserProfile';
 import FileUpload from '../../components/FileUpload';
 
-const Profile = () => {
+const Profile: FC = () => {
   const [values, setValues] = useState<IProfile>({
     username: '',
     name: '',
