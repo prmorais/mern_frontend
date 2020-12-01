@@ -48,9 +48,12 @@ const Login: React.FC = () => {
           if (user) {
             const idTokenResult = await user?.getIdTokenResult();
             dispatch({
-            type: 'LOGGED_IN_USER',
-            user: { email: user?.email, token: idTokenResult?.token },
-          });
+              type: 'LOGGED_IN_USER',
+              user: {
+                email: user?.email,
+                token: idTokenResult?.token,
+              },
+            });
           }
 
           // Envia informações para nosso servidor mongodb para criar/atualizar o usuário
@@ -82,10 +85,10 @@ const Login: React.FC = () => {
         if (user) {
           const idTokenResult = await user?.getIdTokenResult();
 
-        dispatch({
-          type: 'LOGGED_IN_USER',
-          user: { email: user?.email, token: idTokenResult?.token },
-        });
+          dispatch({
+            type: 'LOGGED_IN_USER',
+            user: { email: user?.email, token: idTokenResult?.token },
+          });
         }
 
         // Envia informações para nosso servidor mongodb para criar/atualizar o usuário

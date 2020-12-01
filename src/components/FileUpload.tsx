@@ -9,9 +9,7 @@ import { IFileUpload, IImage } from '../interfaces/Profile.interface';
 import { AuthContext } from '../context/AuthContext';
 import Image from './Image';
 
-export const FileUpload = (
-  { setValues, setLoading, values }: IFileUpload,
-) => {
+export const FileUpload = ({ setValues, setLoading, values }: IFileUpload) => {
   const { state } = useContext(AuthContext);
   const { images } = values;
 

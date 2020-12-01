@@ -20,7 +20,10 @@ type UserAction = {
 // type DispatchType = (args: UserAction) => UserAction
 
 // Reducer
-const firebaseReducer = (state: UserState = initialState, action: UserAction) => {
+const firebaseReducer = (
+  state: UserState = initialState,
+  action: UserAction,
+) => {
   switch (action.type) {
     case 'LOGGED_IN_USER':
       return { ...state, user: action.user };
@@ -38,6 +41,7 @@ const initialState: UserState = {
   },
 };
 
+// Dispatch
 const initialDispatch: Dispatch<UserAction> = (f:UserAction) => f;
 
 // Create context
