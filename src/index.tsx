@@ -6,7 +6,7 @@ import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
 
-import { AuthProvider } from './context/authContext';
+import { AuthProvider } from './context/AuthContext';
 
 ReactDOM.render(
   <React.StrictMode>

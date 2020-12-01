@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/AuthContext';
 
 const PublicRoute = ({ ...rest }: any) => {
   const { state } = useContext(AuthContext);

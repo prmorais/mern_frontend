@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { auth, googleAuthProvider } from '../../firebase';
 
 import AuthForm from '../../components/forms/AuthForm';
-import { AuthContext } from '../../context/authContext';
+import { AuthContext } from '../../context/AuthContext';
 
 const USER_CREATE = gql`
   mutation userCreate {
@@ -37,12 +37,21 @@ const Login: React.FC = () => {
         .signInWithEmailAndPassword(email, password)
         .then(async (result) => {
           const { user } = result;
-          const idTokenResult = await user?.getIdTokenResult();
 
-          dispatch({
+          /// const idTokenResult = await user?.getIdTokenResult();
+
+          // dispatch({
+          //   type: 'LOGGED_IN_USER',
+          //   payload: { email: user?.email, token: idTokenResult?.token },
+          // });
+
+          if (user) {
+            const idTokenResult = await user?.getIdTokenResult();
+            dispatch({
             type: 'LOGGED_IN_USER',
-            payload: { email: user?.email, token: idTokenResult?.token },
+            user: { email: user?.email, token: idTokenResult?.token },
           });
+          }
 
           // Envia informações para nosso servidor mongodb para criar/atualizar o usuário
           userCreate();
@@ -62,12 +71,22 @@ const Login: React.FC = () => {
       .signInWithPopup(googleAuthProvider)
       .then(async (result) => {
         const { user } = result;
-        const idTokenResult = await user?.getIdTokenResult();
+
+        // const idTokenResult = await user?.getIdTokenResult();
+
+        // dispatch({
+        //   type: 'LOGGED_IN_USER',
+        //   payload: { email: user?.email, token: idTokenResult?.token },
+        // });
+
+        if (user) {
+          const idTokenResult = await user?.getIdTokenResult();
 
         dispatch({
           type: 'LOGGED_IN_USER',
-          payload: { email: user?.email, token: idTokenResult?.token },
+          user: { email: user?.email, token: idTokenResult?.token },
         });
+        }
 
         // Envia informações para nosso servidor mongodb para criar/atualizar o usuário
         userCreate();

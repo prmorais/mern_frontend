@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, Route } from 'react-router-dom';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/AuthContext';
 import LoadingToRedirect from './LoadingToRedirect';
 
 const PrivateRouter = ({ ...rest }: any) => {

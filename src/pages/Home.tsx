@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/AuthContext';
 
 interface IPost {
   id: number;
@@ -29,7 +29,10 @@ const Home: React.FC = () => {
   const updateUserName = () => {
     dispatch({
       type: 'LOGGED_IN_USER',
-      payload: 'Paulo Roberto',
+      user: {
+        email: 'Paulo Roberto',
+        token: '',
+      },
     });
   };
 

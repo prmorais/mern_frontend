@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import AuthForm from '../../components/forms/AuthForm';
-import { AuthContext } from '../../context/authContext';
+import { AuthContext } from '../../context/AuthContext';
 import { auth } from '../../firebase';
 
 const USER_CREATE = gql`
@@ -62,15 +62,27 @@ const CompleteRegistration: React.FC = () => {
         await user?.updatePassword(password);
 
         // "Despacha" usuario com token e email, para em seguinda, redirecionar
-        const idTokenResult = await user?.getIdTokenResult();
+        // const idTokenResult = await user?.getIdTokenResult();
+
+        // dispatch({
+        //   type: 'LOGGED_IN_USER',
+        //   user: {
+        //     email: user.email,
+        //     token: idTokenResult?.token,
+        //   },
+        // });
+
+        if (user) {
+          const idTokenResult = await user?.getIdTokenResult();
 
         dispatch({
           type: 'LOGGED_IN_USER',
-          payload: {
-            email: user?.email,
+          user: {
+            email: user.email,
             token: idTokenResult?.token,
           },
         });
+        }
 
         // Faz uma requisição a API para salvar/atualizar o usuário no mmongodb
         userCreate();

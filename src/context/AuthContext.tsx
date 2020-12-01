@@ -1,4 +1,6 @@
-import React, { createContext, useEffect, useReducer } from 'react';
+import React, {
+ createContext, Dispatch, useEffect, useReducer,
+} from 'react';
 import { auth } from '../firebase';
 
 interface IUser {
@@ -15,7 +17,7 @@ type UserAction = {
   user: IUser,
 }
 
-type DispatchType = (args: UserAction) => UserAction
+// type DispatchType = (args: UserAction) => UserAction
 
 // Reducer
 const firebaseReducer = (state: UserState = initialState, action: UserAction) => {
@@ -36,16 +38,13 @@ const initialState: UserState = {
   },
 };
 
-const initialDispatch: UserAction = {
-  type: '',
-  user: {
-    email: '',
-    token: '',
-  },
-};
+const initialDispatch: Dispatch<UserAction> = (f:UserAction) => f;
 
 // Create context
-const AuthContext = createContext({ state: initialState });
+const AuthContext = createContext({
+  state: initialState,
+  dispatch: initialDispatch,
+});
 
 // Context provider
 const AuthProvider: React.FC = ({ children }) => {

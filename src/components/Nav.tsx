@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { auth } from '../firebase';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/AuthContext';
 
 const Nav: React.FC = () => {
   const { state, dispatch } = useContext(AuthContext);
@@ -15,7 +15,10 @@ const Nav: React.FC = () => {
 
     dispatch({
       type: 'LOGGED_IN_USER',
-      payload: null,
+      user: {
+        email: '',
+        token: '',
+      },
     });
 
     history.push('/login');
@@ -44,7 +47,9 @@ const Nav: React.FC = () => {
           {user && (
             <li className="nav-item active">
               <Link className="nav-link" to="/profile">
-                {user && user.email.split('@')[0]}
+                {
+                 user.email && user.email.split('@')[0]
+                }
               </Link>
             </li>
           )}

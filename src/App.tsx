@@ -5,7 +5,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import { ToastContainer } from 'react-toastify';
 
-import { AuthContext } from './context/authContext';
+import { AuthContext } from './context/AuthContext';
 
 import Nav from './components/Nav';
 import Home from './pages/Home';

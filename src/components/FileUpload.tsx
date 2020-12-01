@@ -6,7 +6,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 import { IFileUpload, IImage } from '../interfaces/Profile.interface';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/AuthContext';
 import Image from './Image';
 
 export const FileUpload = (
